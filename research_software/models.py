@@ -3,27 +3,28 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+# Tile Object has to be created before the Task object since taskobj inherits from tileobj
 class TileObject(models.Model):
-
     status_options = [
         ("live", "Live"),
         ("pending", "Pending"),
         ("archived", "Archived"),
     ]
-    Launch_data = (
-        models.DateField()
-    )  # could also be a datatime field depending on the full use case but this wasn't made explicit
+    # could also be a datatime field depending on the full use case but this wasn't made explicit
+    Launch_data = models.DateField()
     Status = models.CharField(choices=status_options, default="pending", max_length=10)
 
     class Meta:
         ordering = ["-Launch_data"]
 
-    lookup_field = "tile"
-
     def __str__(self):
+        # helpful way of seeing the amount of tasks assigned already
         try:
             num_of_tasks = self.taskobject_set.all().count()
-            return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}, # of Tasks:{num_of_tasks}"
+            if num_of_tasks != int:
+                raise AttributeError
+            else:
+                return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}, # of Tasks:{num_of_tasks}"
         except (NameError, AttributeError):
             pass
         return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}"

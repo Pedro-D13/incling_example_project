@@ -6,6 +6,8 @@ from research_software.models import TaskObject, TileObject
 
 
 class TaskObjectSerializer(serializers.ModelSerializer):
+    id = serializers.HyperlinkedIdentityField(view_name="task-detail")
+    Tile = serializers.HyperlinkedRelatedField(view_name="tile-detail", read_only=True)
 
     class Meta:
         model = TaskObject
@@ -20,7 +22,13 @@ class TaskObjectSerializer(serializers.ModelSerializer):
 class TileObjectSerializer(serializers.ModelSerializer):
     Launch_data = serializers.DateField(format=DATE_FORMAT)
     tasks = serializers.StringRelatedField(many=True)
+    id = serializers.HyperlinkedIdentityField(view_name="tile-detail")
 
     class Meta:
         model = TileObject
-        fields = ["Launch_data", "Status", "tasks"]
+        fields = [
+            "id",
+            "Launch_data",
+            "Status",
+            "tasks",
+        ]
