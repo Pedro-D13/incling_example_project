@@ -18,7 +18,7 @@ Features:
   -  Tile Detail shows the tasks assigned to it
   
  
-Things I would have done differently:
+Features I would have also implemented if this was a real world project:
   - Started the project with a TDD approach
   - used fixtures to test and prepopulate the database
   - Abstract the user model and create a one to one relatonship with the TileObject
