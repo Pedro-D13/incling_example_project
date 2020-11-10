@@ -18,13 +18,15 @@ class TileObject(models.Model):
     class Meta:
         ordering = ["-Launch_data"]
 
+    lookup_field = "tile"
+
     def __str__(self):
         try:
             num_of_tasks = self.taskobject_set.all().count()
-            return f"Status:{self.Status}, Launch:{self.Launch_data}, # of Tasks:{num_of_tasks}"
+            return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}, # of Tasks:{num_of_tasks}"
         except (NameError, AttributeError):
             pass
-        return f"Status:{self.Status}, Launch:{self.Launch_data}"
+        return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}"
 
 
 class TaskObject(models.Model):
@@ -49,14 +51,17 @@ class TaskObject(models.Model):
         models.TextField()
     )  # Accepts an arbitrary amount of text, allowing for varying lengths of description.
     Order = models.IntegerField(
-        choices=OrderOptions, default=None, blank=True
+        choices=OrderOptions, default=None, null=True, blank=True, unique=False
     )  #  setting the blank=True allows the order to be set a later date
     Type = models.CharField(choices=types_of_options, max_length=10, default="survey")
-    Tile = models.ForeignKey(TileObject, related_name="tasks", on_delete=models.CASCADE)
+    Tile = models.ForeignKey(
+        TileObject,
+        related_name="tasks",
+        on_delete=models.CASCADE,
+    )
 
     class meta:
-        order_with_respect_to = ["Order"]
-        unique_together = ["Order", "Tile"]
+        ordering = ["-Order", "Type"]
 
     def __str__(self):
-        return f"Title:{self.Title}, Desc:{self.Description}"
+        return f"Title:{self.Title}, Desc:{self.Description},Position:{self.Order},Type:{self.Type}"
