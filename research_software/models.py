@@ -11,11 +11,11 @@ class TileObject(models.Model):
         ("archived", "Archived"),
     ]
     # could also be a datatime field depending on the full use case but this wasn't made explicit
-    Launch_data = models.DateField()
+    Launch_date = models.DateField()
     Status = models.CharField(choices=status_options, default="pending", max_length=10)
 
     class Meta:
-        ordering = ["-Launch_data"]
+        ordering = ["-Launch_date"]
 
     def __str__(self):
         # helpful way of seeing the amount of tasks assigned already
@@ -24,10 +24,10 @@ class TileObject(models.Model):
             if num_of_tasks != int:
                 raise AttributeError
             else:
-                return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}, # of Tasks:{num_of_tasks}"
+                return f"Status:{self.Status}, Launch:{self.Launch_date:%b %d %Y}, # of Tasks:{num_of_tasks}"
         except (NameError, AttributeError):
             pass
-        return f"Status:{self.Status}, Launch:{self.Launch_data:%b %d %Y}"
+        return f"Status:{self.Status}, Launch:{self.Launch_date:%b %d %Y}"
 
 
 class TaskObject(models.Model):
