@@ -4,7 +4,8 @@ Pre-Interview Task
 This was a fun little exercise that allowed me to demonstrate how I would go about completing the task given.
 
 Features 
-  - Rest API Validates Orders Task assigned to a Tile. Tasks within a tile cannot have the same order number
+  Rest API Validates Orders Task assigned to a Tile. Tasks within a tile cannot have the same order number
+  
   e.g. a Task , Titled 'First' assigned to a Tile with launch_date on the 22/11/2020 and Ordered in postion 1 
   
   and a  Task , Titled 'second' assigned to a Tile with launch_data on the 22/11/2020 and Ordered in postion 1 --- will not be valid 
