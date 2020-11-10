@@ -19,13 +19,51 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Usually I would hide the secret key
 SECRET_KEY = "sb%h16x_0rqj9!68609_jqelpz1ug*ohc24yu4s(i##2uda=(@"
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
+# code used to retrieve the key from a environment variable is shown below
+"""
+SECRET_KEY = os.environ.get('the_environment_variable_saved')
+
+
+also if this application was going to be prepared for production i'd also config a function to determine weather or not to run it in debug mode like so.
+
+
+production = False
+
+def testing_or_production():
+    # Checks to see if the application is running on mac or linx, depending on the OS, it will be in debug or not
+    try:
+        if sys.platform == 'darwin':
+            print("running on mac, not in production")
+            return os.environ['SECRET_KEY']
+        elif sys.platform == 'linux' or sys.platform == 'linux2':
+            print('running on linux, in production')
+            production = True
+            with open('/etc/config.json') as config_file:
+                config = json.load(config_file)
+            return config['SECRET_KEY']
+        else:
+            raise OSError
+    except OSError:
+        print("Not a suitable envrionment to run the project")
+
+
+SECRET_KEY = testing_or_production()
+
+if production:
+    DEBUG = False
+else:
+    DEBUG = True
+"""
+
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: don't run with debug turned on in production!
+
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -37,7 +75,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "research_software.apps.ResearchSoftwareConfig", "rest_framework",
+    "research_software.apps.ResearchSoftwareConfig",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [

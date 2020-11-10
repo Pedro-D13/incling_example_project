@@ -1,40 +1,62 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class TileObject(models.Model):
+
     status_options = [
         ("live", "Live"),
         ("pending", "Pending"),
         ("archived", "Archived"),
     ]
-    Launch_data = models.DateField(
-        verbose_name="Launch Data"
+    Launch_data = (
+        models.DateField()
     )  # could also be a datatime field depending on the full use case but this wasn't made explicit
-    Status = models.CharField(choices=status_options, default="pen", max_length=10)
+    Status = models.CharField(choices=status_options, default="pending", max_length=10)
+
+    class Meta:
+        ordering = ["-Launch_data"]
 
     def __str__(self):
         try:
             num_of_tasks = self.taskobject_set.all().count()
             return f"Status:{self.Status}, Launch:{self.Launch_data}, # of Tasks:{num_of_tasks}"
-        except Error:
+        except (NameError, AttributeError):
             pass
         return f"Status:{self.Status}, Launch:{self.Launch_data}"
 
 
 class TaskObject(models.Model):
-    types_of_options = [("sur", "Survey"), ("dis", "Discussion"), ("dia", "Diary")]
+    types_of_options = [
+        ("survey", "Survey"),
+        ("discussion", "Discussion"),
+        ("diary", "Diary"),
+    ]
+
+    OrderOptions = [
+        ("1", "postion 1"),
+        ("2", "postion 2"),
+        ("3", "postion 3"),
+        ("4", "postion 4"),
+    ]
+    # extend it based on the amount of questions you'd usually ask
+
     Title = models.CharField(
         max_length=50, unique=True
     )  # titles do not usually require to be long
     Description = (
         models.TextField()
     )  # Accepts an arbitrary amount of text, allowing for varying lengths of description.
-    Order = models.IntegerField()
-    Type = models.CharField(choices=types_of_options, max_length=3, default="sur")
-    Tile = models.ForeignKey(TileObject, on_delete=models.CASCADE)
+    Order = models.IntegerField(
+        choices=OrderOptions, default=None, blank=True
+    )  #  setting the blank=True allows the order to be set a later date
+    Type = models.CharField(choices=types_of_options, max_length=10, default="survey")
+    Tile = models.ForeignKey(TileObject, related_name="tasks", on_delete=models.CASCADE)
 
     class meta:
         order_with_respect_to = ["Order"]
+        unique_together = ["Order", "Tile"]
 
     def __str__(self):
         return f"Title:{self.Title}, Desc:{self.Description}"
